@@ -37,11 +37,21 @@ def createCommand(inputAmount, videoFileFormat, gridX, gridY, newVidSizeX, newVi
             
             overlays = " [base][clip0] overlay=shortest=1 [temp1]; "
             
+            top = 0
+            left = 1
+            
             for i in range(1, toAmount):
+            
+                if(left == gridX):
+                    left = 0
+                    top += 1
+            
                 overlays += "[temp" + str(i) + "][clip" + str(i) + "] overlay=shortest=1"
-                overlays += (":x = " + str((i % gridX) * vidX)) if i % gridX > 0 else ""
-                overlays += (":y = " + str(math.floor((i) / gridY) * vidY)) if i >= gridY else ""
+                overlays += (":x = " + str(left * vidX)) if left > 0 else ""
+                overlays += (":y = " + str(top * vidY)) if top > 0 else ""
                 overlays += " [temp" + str(i + 1) + "]; " if i != (toAmount - 1) else ""
+                
+                left += 1
                 
             return overlays
             
@@ -70,4 +80,4 @@ def createCommand(inputAmount, videoFileFormat, gridX, gridY, newVidSizeX, newVi
 # size of each video - y-axis
 # file to save the filter for the command
 # output file name
-print(createCommand(9, "mp4", 3, 3, 1080, 1080, "filter_script.txt", "out.mp4"))
+print(createCommand(9, "mp4", 3, 3, 360, 360, "filter_script.txt", "out.mp4"))
